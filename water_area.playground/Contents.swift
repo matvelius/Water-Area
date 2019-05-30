@@ -21,12 +21,9 @@ func waterArea(array: [Int]) -> Int {
     }
     print("enumeratedHeightsArray: \(enumeratedHeightsArray)")
     
-    // sorting the array <-- INVESTIGATE!
-    var sortedHeightsArray = enumeratedHeightsArray.sorted { (arg0, arg1) -> Bool in
-        let (_, _) = arg0 // seems like it's sorting based on both value & index? weird...
-        let (_, _) = arg1
-        return arg0 > arg1
-    }
+    // sorting the array from largest to smallest
+    var sortedHeightsArray = enumeratedHeightsArray.sorted { $0 > $1 }
+    
     print("sortedHeightsArray: \(sortedHeightsArray)")
     
     
