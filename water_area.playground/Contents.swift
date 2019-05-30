@@ -1,8 +1,9 @@
 import UIKit
 
-//let array = [2, 0, 7, 0, 3, 0, 7]
-//let array = [0, 1, 0, 1, 0]
+//let array = [2, 0, 7, 0, 3, 0, 7] //20
+//let array = [0, 1, 0, 1, 0] //1
 let array = [0, 8, 0, 0, 5, 0, 0, 10, 0, 0, 1, 1, 0, 3] //48
+//let array = [0, 8, 0, 0, 10, 0, 0, 10, 0, 0, 1, 1, 0, 3] //49
 //let array = [4, 0, 2, 4, 3, 6, 0, 0, 7] //19
 //let array = [0, 0, 0, 0, 0]
 print("original array: \(array)")
@@ -23,13 +24,12 @@ func waterArea(array: [Int]) -> Int {
     
     // sorting the array from largest to smallest
     var sortedHeightsArray = enumeratedHeightsArray.sorted { $0 > $1 }
-    
     print("sortedHeightsArray: \(sortedHeightsArray)")
     
     
     // first, find water area between two highest peaks
     
-    // 1) figure out which of the first two peaks is leftmost
+    // 1) figure out which of the first two peaks is leftmost, and which is rightmost
     var leftPeakIndex = sortedHeightsArray[0].index < sortedHeightsArray[1].index ? sortedHeightsArray[0].index : sortedHeightsArray[1].index
     var rightPeakIndex = sortedHeightsArray[0].index > sortedHeightsArray[1].index ? sortedHeightsArray[0].index : sortedHeightsArray[1].index
     print("leftPeakIndex: \(leftPeakIndex); rightPeakIndex: \(rightPeakIndex)")
@@ -61,12 +61,12 @@ func waterArea(array: [Int]) -> Int {
             
             print("height.index(\(height.index)) < leftPeakIndex(\(leftPeakIndex))")
             maxHeight = height.value
-            rightPeakIndex = leftPeakIndex
+            let newRightPeakIndex = leftPeakIndex
             leftPeakIndex = height.index
             
-            totalArea += calculateArea(leftIndex: leftPeakIndex, rightIndex: rightPeakIndex, maxHeight: maxHeight)
+            totalArea += calculateArea(leftIndex: leftPeakIndex, rightIndex: newRightPeakIndex, maxHeight: maxHeight)
             
-            print("leftPeakIndex: \(leftPeakIndex); rightPeakIndex: \(rightPeakIndex)")
+            print("leftPeakIndex: \(leftPeakIndex); rightPeakIndex: \(newRightPeakIndex)")
             print("maxHeight is now: \(maxHeight)")
             print("totalArea is now: \(totalArea)\n")
             
@@ -76,19 +76,19 @@ func waterArea(array: [Int]) -> Int {
         } else if height.index > rightPeakIndex {
             print("height.index(\(height.index)) > rightPeakIndex(\(rightPeakIndex))")
             maxHeight = height.value
-            leftPeakIndex = rightPeakIndex
+            let newLeftPeakIndex = rightPeakIndex
             rightPeakIndex = height.index
             
-            totalArea += calculateArea(leftIndex: leftPeakIndex, rightIndex: rightPeakIndex, maxHeight: maxHeight)
+            totalArea += calculateArea(leftIndex: newLeftPeakIndex, rightIndex: rightPeakIndex, maxHeight: maxHeight)
             
-            print("leftPeakIndex: \(leftPeakIndex); rightPeakIndex: \(rightPeakIndex)")
+            print("leftPeakIndex: \(newLeftPeakIndex); rightPeakIndex: \(rightPeakIndex)")
             print("maxHeight is now: \(maxHeight)")
             print("totalArea is now: \(totalArea)\n")
             
             continue
         }
         
-        // check if the two peaks are adjacent
+        // check if the two new peaks are adjacent
         if (leftPeakIndex + 1) == rightPeakIndex {
             print("(leftPeakIndex + 1) == rightPeakIndex")
             continue
@@ -108,16 +108,13 @@ func calculateArea(leftIndex: Int, rightIndex: Int, maxHeight: Int) -> Int {
         
         var total = 0
         
-        for index in (leftIndex + 1)...(rightIndex - 1) {
+        for index in (leftIndex + 1)...(rightIndex - 1) where (maxHeight - array[index]) >= 0 {
             total += maxHeight - array[index]
             print("adding \(maxHeight - array[index]) to totalArea")
         }
         
-        if total < 0 {
-            return(0)
-        } else {
-            return(total)
-        }
+        return total
+        
     }
     
     print("returning 0")
